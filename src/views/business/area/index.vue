@@ -83,9 +83,15 @@
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
       <el-table-column label="父id" align="center" prop="pid" />
-      <el-table-column label="名称" align="center" prop="name" />
+      <el-table-column label="名称" align="center" prop="name">
+        <template slot-scope="scope">
+          <router-link v-if="scope.row.ancestors.split(',').length === 3" to="/floor-plan">
+            <el-button type="text">{{scope.row.name}}</el-button>
+          </router-link>
+          <span v-else>{{scope.row.name}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="排序" align="center" prop="sort" />
-      <el-table-column label="房间信息" align="center" prop="roomInfo" />
       <el-table-column label="祖级列表" align="center" prop="ancestors" />
       <el-table-column label="所属部门" align="center" prop="deptId" />
       <el-table-column label="备注" align="center" prop="remark" />
@@ -122,9 +128,6 @@
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="form.sort" placeholder="请输入排序" />
-        </el-form-item>
-        <el-form-item label="房间信息" prop="roomInfo">
-          <el-input v-model="form.roomInfo" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入备注" />
@@ -173,7 +176,6 @@ export default {
         pid: null,
         name: null,
         sort: null,
-        roomInfo: null,
         deptId: null,
         extend1: null,
         extend2: null
@@ -229,7 +231,6 @@ export default {
         pid: null,
         name: null,
         sort: null,
-        roomInfo: null,
         ancestors: null,
         createBy: null,
         createTime: null,

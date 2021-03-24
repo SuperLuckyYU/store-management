@@ -71,15 +71,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="合同文件" prop="fileUrl">
-        <el-input
-          v-model="queryParams.fileUrl"
-          placeholder="请输入合同文件"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="下次营业执照审核日" prop="businessLicenseCheckDate">
         <el-date-picker clearable size="small"
           v-model="queryParams.businessLicenseCheckDate"
@@ -144,6 +135,15 @@
         <el-input
           v-model="queryParams.deptId"
           placeholder="请输入所属部门"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="备注" prop="remark">
+        <el-input
+          v-model="queryParams.remark"
+          placeholder="请输入备注"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -282,7 +282,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -328,11 +328,11 @@
         <el-form-item label="物业费" prop="property">
           <el-input v-model="form.property" placeholder="请输入物业费" />
         </el-form-item>
-        <el-form-item label="合同文件" prop="fileUrl">
-          <el-input v-model="form.fileUrl" placeholder="请输入合同文件" />
+        <el-form-item label="合同文件">
+          <fileUpload v-model="form.fileUrl"/>
         </el-form-item>
-        <el-form-item label="营业执照" prop="businessLicenseUrl">
-          <el-input v-model="form.businessLicenseUrl" type="textarea" placeholder="请输入内容" />
+        <el-form-item label="营业执照">
+          <fileUpload v-model="form.businessLicenseUrl"/>
         </el-form-item>
         <el-form-item label="下次营业执照审核日" prop="businessLicenseCheckDate">
           <el-date-picker clearable size="small"
@@ -390,10 +390,12 @@
 
 <script>
 import { listContract, getContract, delContract, addContract, updateContract, exportContract } from "@/api/business/contract";
+import FileUpload from '@/components/FileUpload';
 
 export default {
   name: "Contract",
   components: {
+    FileUpload,
   },
   data() {
     return {
@@ -437,6 +439,7 @@ export default {
         planProperty: null,
         realityProperty: null,
         deptId: null,
+        remark: null,
         extend1: null,
         extend2: null
       },
