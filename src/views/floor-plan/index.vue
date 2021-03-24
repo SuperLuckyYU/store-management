@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="mb-2 mt-2">
-      <el-tooltip v-if="isStart">
+    <div class="ml-2 mb-2 mt-2">
+      <el-tooltip v-if="!isStart">
         <template slot="content">
           开始当前商铺的绘制
         </template>
@@ -25,19 +25,20 @@
     <div class="draggable-wrapper">
       <el-tooltip>
         <template slot="content">
-          添加元素
+          {{isStart ? '添加元素' : '点击开始按钮以继续'}}
         </template>
         <i
           class="add-btn el-icon-circle-plus-outline"
+          :class="{'desabled': !isStart}"
           @click="handleAddclick" />
       </el-tooltip>
       <el-tooltip>
         <template slot="content">
-          删除所选元素
+          {{isStart ? '删除所选元素' : '点击开始按钮以继续'}}
         </template>
         <i
           class="delete-btn el-icon-delete"
-          two-tone-color="#eb2f96"
+          :class="{'desabled': !isStart}"
           @click="handleDeleteClick" />
       </el-tooltip>
       <vue-draggable-resizable
@@ -55,10 +56,14 @@
         v-for="(item, index) in layouts"
         :key="index" />
     </div>
-    <el-dialog title="绑定商户信息" :visible.sync="openDialog" width="500px" append-to-body>
+    <el-dialog
+      title="绑定商户信息"
+      :visible.sync="openDialog"
+      width="500px"
+      append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="商户名称" prop="storeName">
-          <el-select v-model="form.storeName" filterable placeholder="请选择绑定商户">
+        <el-form-item label="商户名称" prop="storeId">
+          <el-select v-model="form.storeId" filterable placeholder="请选择绑定商户">
             <el-option
               v-for="item in storeOptions"
               :key="item.id"
@@ -69,7 +74,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" @click="submitForm('form')">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -87,22 +92,38 @@ export default {
   },
   data () {
     return {
+      isStart: false,
+      openDialog: false,
+      isFirst: true,
       layouts: [
         {
           w: 100,
           h: 100,
-          x: 0,
-          y: 0,
+          x: 20,
+          y: 20,
           active: false,
         },
       ],
       currentActivedIndex: '',
-      isStart: true,
-      openDialog: false,
       form: {},
-      rules: {},
+      rules: {
+        storeId: [
+          { required: true, message: '请选择绑定商铺', trigger: 'blur' },
+        ],
+      },
       storeOptions: [],
     }
+  },
+  computed: {
+    storeObj () {
+      const ret = {}
+      this.storeOptions.map(item => {
+        if (!ret[item.id]) {
+          ret[item.id] = item
+        }
+      })
+      return ret
+    },
   },
   created () {
     this.fetchStroeList()
@@ -110,8 +131,8 @@ export default {
   methods: {
     async fetchStroeList () {
       const res = await listStore({
-        pageSize: 1,
-        pageNum: 10000,
+        pageSize: 1000,
+        pageNum: 1,
       })
       this.storeOptions = res.rows
     },
@@ -119,43 +140,62 @@ export default {
       this.layouts.push({
         w: 100,
         h: 100,
-        x: 0,
-        y: -100 * this.layouts.length,
+        x: 20,
+        y: -120 * this.layouts.length,
         active: true,
+        storeName: this.storeObj[this.form.storeId].storeName,
+        storeId: this.form.storeId,
       })
     },
     handleDeleteClick () {
       this.layouts.splice(this.currentActivedIndex, 1)
     },
+    // 元素调整大小
     onResize (i, x, y, w, h) {
       this.layouts[i].x = x
       this.layouts[i].y = y
       this.layouts[i].w = w
       this.layouts[i].h = h
     },
+    // 元素拖拽
     onDrag (i, x, y) {
       this.layouts[i].x = x
       this.layouts[i].y = y
     },
+    // 元素点击
     onActivated (i) {
       this.layouts[i].active = true
       this.currentActivedIndex = i
     },
+    // 元素取消选中
     onDeactivated (i) {
       this.layouts[i].active = false
     },
+    // 点击开始按钮
     handleStartClick () {
-      this.isStart = false
       this.openDialog = true
+      this.form = {}
     },
+    // 点击完成按钮
     handleCompleteClick () {
-
+      this.isStart = false
+      this.form = {}
     },
-    submitForm () {
-
+    // 提交绑定商户信息表单
+    submitForm (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.isStart = true
+          this.openDialog = false
+          this.isFirst = false
+        } else {
+          return false
+        }
+      });
     },
+    // 取消绑定商户信息表单弹窗
     cancel () {
-      this.isStart = true
+      this.isStart = false
       this.openDialog = false
     },
   },
@@ -182,6 +222,10 @@ export default {
       right: 20px;
       cursor: pointer;
       color: #F56C6C;
+    }
+    .desabled {
+      cursor: no-drop;
+      color: #909399;
     }
     .draggable-item {
       border: none;
