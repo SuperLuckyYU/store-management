@@ -81,10 +81,20 @@
       </el-form-item>
     </el-form>
     <!--  底部  -->
-        <div class="el-login-footer">
-          <a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank" rel="nofollow">京ICP备2021008492号-1</a>
-          <span>版权所有© 2021 北京恒易相元科技有限公司</span>
-        </div>
+    <div class="el-login-footer">
+      <div style="width:300px;margin:0 auto;">
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011302003323" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+          <img src="@/assets/images/huizhang.png" style="vertical-align: middle;" />
+          <span style="margin-left: 5px;color:#939393;">京公网安备 11011302003323号</span>
+        </a >
+      </div>
+      <div style="margin-top: 5px">
+        <a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank" rel="nofollow">京ICP备2021008492号-1</a>
+        <span>版权所有© 2021 北京恒易相元科技有限公司</span>
+      </div>
+    </div>
+    <!-- <div style="width:300px;margin:0 auto; padding:20px 0;">
+     </div> -->
   </div>
 </template>
 
@@ -228,7 +238,7 @@ export default {
 };
 </script>
 
-<style rel="stylesheet/scss" lang="scss">
+<style rel="stylesheet/scss" lang="scss" scoped>
 .login {
   display: flex;
   justify-content: center;
@@ -283,8 +293,7 @@ export default {
 
 }
 .el-login-footer {
-  height: 40px;
-  line-height: 40px;
+  height: 60px;
   position: fixed;
   bottom: 0;
   width: 100%;

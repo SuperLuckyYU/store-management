@@ -178,7 +178,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -187,67 +187,25 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改商铺信息对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="区域id" prop="areaId">
-          <el-input v-model="form.areaId" placeholder="请输入区域id" />
-        </el-form-item>
-        <el-form-item label="商铺编号" prop="storeNo">
-          <el-input v-model="form.storeNo" placeholder="请输入商铺编号" />
-        </el-form-item>
-        <el-form-item label="商铺名称" prop="storeName">
-          <el-input v-model="form.storeName" placeholder="请输入商铺名称" />
-        </el-form-item>
-        <el-form-item label="商铺类型" prop="type">
-          <el-select v-model="form.type" placeholder="请选择商铺类型">
-            <el-option
-              v-for="dict in typeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="商铺状态">
-          <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictValue"
-            >{{dict.dictLabel}}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="商铺面积" prop="acreage">
-          <el-input v-model="form.acreage" placeholder="请输入商铺面积" />
-        </el-form-item>
-        <el-form-item label="商铺位置" prop="location">
-          <el-input v-model="form.location" placeholder="请输入商铺位置" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入备注" />
-        </el-form-item>
-        <el-form-item label="扩展1" prop="extend1">
-          <el-input v-model="form.extend1" placeholder="请输入扩展1" />
-        </el-form-item>
-        <el-form-item label="扩展2" prop="extend2">
-          <el-input v-model="form.extend2" placeholder="请输入扩展2" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+    <!-- 添加&修改商铺弹窗 -->
+    <add-stroe-dialog
+      v-if="open"
+      :title="title"
+      :statusOptions="statusOptions"
+      :typeOptions="typeOptions"
+      @UpdateStoreDialogVisible="handleCloseStoreDialog"
+      @AddStoreCallback="handleAddStoreCallback" />
   </div>
 </template>
 
 <script>
 import { listStore, getStore, delStore, addStore, updateStore, exportStore } from "@/api/business/store";
+import AddStroeDialog from '../../../sections/AddStoreDialog'
 
 export default {
   name: "Store",
   components: {
+    AddStroeDialog,
   },
   data() {
     return {
@@ -263,12 +221,12 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 商铺信息表格数据
-      storeList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
       open: false,
+      // 商铺信息表格数据
+      storeList: [],
       // 商铺类型字典
       typeOptions: [],
       // 商铺状态字典
@@ -288,11 +246,6 @@ export default {
         extend1: null,
         extend2: null
       },
-      // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
-      }
     };
   },
   created() {
@@ -322,33 +275,6 @@ export default {
     statusFormat(row, column) {
       return this.selectDictLabel(this.statusOptions, row.status);
     },
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        id: null,
-        areaId: null,
-        storeNo: null,
-        storeName: null,
-        type: null,
-        status: "0",
-        acreage: null,
-        location: null,
-        createBy: null,
-        createTime: null,
-        updateBy: null,
-        updateTime: null,
-        deptId: null,
-        remark: null,
-        extend1: null,
-        extend2: null
-      };
-      this.resetForm("form");
-    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -367,38 +293,16 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset();
       this.open = true;
       this.title = "添加商铺信息";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset();
       const id = row.id || this.ids
       getStore(id).then(response => {
         this.form = response.data;
         this.open = true;
         this.title = "修改商铺信息";
-      });
-    },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          if (this.form.id != null) {
-            updateStore(this.form).then(response => {
-              this.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            addStore(this.form).then(response => {
-              this.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
-          }
-        }
       });
     },
     /** 删除按钮操作 */
@@ -427,6 +331,12 @@ export default {
         }).then(response => {
           this.download(response.msg);
         })
+    },
+    handleCloseStoreDialog () {
+      this.open = false
+    },
+    handleAddStoreCallback () {
+      this.getList()
     }
   }
 };

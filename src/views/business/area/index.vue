@@ -85,7 +85,7 @@
       <el-table-column label="父id" align="center" prop="pid" />
       <el-table-column label="名称" align="center" prop="name">
         <template slot-scope="scope">
-          <router-link v-if="scope.row.ancestors.split(',').length === 3" to="/floor-plan">
+          <router-link v-if="scope.row.ancestors.split(',').length === 3" :to="{ path: '/floor-plan', query: { id: scope.row.id }}">
             <el-button type="text">{{scope.row.name}}</el-button>
           </router-link>
           <span v-else>{{scope.row.name}}</span>
@@ -210,7 +210,7 @@ export default {
         children: node.children
       };
     },
-	/** 查询部门下拉树结构 */
+	  /** 查询部门下拉树结构 */
     getTreeselect() {
       listArea().then(response => {
         this.areaOptions = [];

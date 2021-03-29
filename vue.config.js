@@ -1,8 +1,6 @@
 "use strict";
 const path = require("path");
 const defaultSettings = require("./src/settings.js");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const webpack = require("webpack");
 
 function resolve(dir) {
   return path.join(__dirname, dir);
@@ -33,12 +31,12 @@ module.exports = {
     host: "0.0.0.0",
     port: port,
     open: true,
-    hot: true,
     proxy: {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
         // target: "http://47.94.139.3:8080",
         target: "http://101.200.127.143:8080",
+        // target: "http://localhost:8080",
         ws: true,
         changeOrigin: true,
         pathRewrite: {
@@ -50,16 +48,11 @@ module.exports = {
   },
   configureWebpack: {
     name: name,
-    devtool: "inline-source-map",
     resolve: {
       alias: {
         "@": resolve("src")
       }
-    },
-    plugins: [
-      new CleanWebpackPlugin(),
-      new webpack.HotModuleReplacementPlugin()
-    ]
+    }
   },
   chainWebpack(config) {
     config.plugins.delete("preload"); // TODO: need test
