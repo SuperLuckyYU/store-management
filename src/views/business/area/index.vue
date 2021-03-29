@@ -28,7 +28,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="所属部门" prop="deptId">
+      <!-- <el-form-item label="所属部门" prop="deptId">
         <el-input
           v-model="queryParams.deptId"
           placeholder="请输入所属部门"
@@ -36,7 +36,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="扩展1" prop="extend1">
         <el-input
           v-model="queryParams.extend1"
@@ -92,8 +92,8 @@
         </template>
       </el-table-column>
       <el-table-column label="排序" align="center" prop="sort" />
-      <el-table-column label="祖级列表" align="center" prop="ancestors" />
-      <el-table-column label="所属部门" align="center" prop="deptId" />
+      <!-- <el-table-column label="祖级列表" align="center" prop="ancestors" /> -->
+      <!-- <el-table-column label="所属部门" align="center" prop="deptId" /> -->
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="扩展1" align="center" prop="extend1" />
       <el-table-column label="扩展2" align="center" prop="extend2" />
@@ -176,7 +176,7 @@ export default {
         pid: null,
         name: null,
         sort: null,
-        deptId: null,
+        // deptId: null,
         extend1: null,
         extend2: null
       },
@@ -184,6 +184,12 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        pid: [
+          { required: true, message: '请选择父id', trigger: 'blur' },
+        ],
+        name: [
+          { required: true, message: '请填写名称', trigger: 'blur' },
+        ],
       }
     };
   },
@@ -236,7 +242,7 @@ export default {
         createTime: null,
         updateBy: null,
         updateTime: null,
-        deptId: null,
+        // deptId: null,
         remark: null,
         extend1: null,
         extend2: null
