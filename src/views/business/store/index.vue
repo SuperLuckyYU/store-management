@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="区域id" prop="areaId">
+      <!-- <el-form-item label="区域id" prop="areaId">
         <el-input
           v-model="queryParams.areaId"
           placeholder="请输入区域id"
@@ -9,7 +9,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="商铺编号" prop="storeNo">
         <el-input
           v-model="queryParams.storeNo"
@@ -164,6 +164,11 @@
           <el-button
             size="mini"
             type="text"
+            @click="handleViewDetails(scope.row)"
+          >查看详情</el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['business:store:edit']"
@@ -191,21 +196,28 @@
     <add-stroe-dialog
       v-if="open"
       :title="title"
+      :info="form"
       :statusOptions="statusOptions"
       :typeOptions="typeOptions"
       @UpdateStoreDialogVisible="handleCloseStoreDialog"
       @AddStoreCallback="handleAddStoreCallback" />
+
+    <!-- 查看商铺详情弹窗 -->
+    <store-detail-dialog v-if="openStoreDetail" :id="currentSelectedStoreId" @CloseStoreDetailDialog="closeStoreDetailDialog" />
   </div>
 </template>
 
 <script>
 import { listStore, getStore, delStore, addStore, updateStore, exportStore } from "@/api/business/store";
 import AddStroeDialog from '../../../sections/AddStoreDialog'
+import StoreDetailDialog from '../../../sections/StoreDetailDialog'
+import "@riophae/vue-treeselect/dist/vue-treeselect.css"
 
 export default {
   name: "Store",
   components: {
     AddStroeDialog,
+    StoreDetailDialog,
   },
   data() {
     return {
@@ -246,6 +258,11 @@ export default {
         extend1: null,
         extend2: null
       },
+      form: {},
+      // 商铺详情弹窗
+      openStoreDetail: false,
+      // 当前选中的商铺id
+      currentSelectedStoreId: '',
     };
   },
   created() {
@@ -337,7 +354,16 @@ export default {
     },
     handleAddStoreCallback () {
       this.getList()
-    }
+    },
+    // 点击查看商铺详情
+    handleViewDetails (row) {
+      this.openStoreDetail = true
+      this.currentSelectedStoreId = row.id
+    },
+    // 更新商铺详情弹窗展示状态
+    closeStoreDetailDialog () {
+      this.openStoreDetail = false
+    },
   }
 };
 </script>

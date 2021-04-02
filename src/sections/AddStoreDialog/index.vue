@@ -2,8 +2,8 @@
   <div>
     <el-dialog :title="title" width="500px" :visible="true" @close="handleCloseClick" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="区域id" prop="areaId">
-          <el-input v-model="form.areaId" placeholder="请输入区域id" />
+        <el-form-item label="区域" prop="areaId">
+          <treeselect v-model="form.areaId" :options="areaOptions" :normalizer="normalizer" placeholder="请选择区域" />
         </el-form-item>
         <el-form-item label="商铺编号" prop="storeNo">
           <el-input v-model="form.storeNo" placeholder="请输入商铺编号" />
@@ -21,7 +21,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商铺状态">
+        <el-form-item label="商铺状态" prop="status">
           <el-radio-group v-model="form.status">
             <el-radio
               v-for="dict in statusOptions"
@@ -56,9 +56,14 @@
 
 <script>
 import { addStore, updateStore } from "@/api/business/store";
+import Treeselect from "@riophae/vue-treeselect";
+import { listArea } from "@/api/business/area";
 
 export default {
   name: 'AddStroeDialog',
+  components: {
+    Treeselect,
+  },
   props: {
     title: {
       type: String,
@@ -72,16 +77,73 @@ export default {
       type: Array,
       required: true
     },
+    info: {
+      type: Object,
+    },
   },
   data () {
     return {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {},
+      rules: {
+        areaId: [
+          { required: true, message: '请选择区域', trigger: 'blur' },
+        ],
+        storeNo: [
+          { required: true, message: '请填写商铺编号', trigger: 'blur' },
+        ],
+        storeName: [
+          { required: true, message: '请填写商铺名称', trigger: 'blur' },
+        ],
+        type: [
+          { required: true, message: '请填写商铺类型', trigger: 'blur' },
+        ],
+        status: [
+          { required: true, message: '请填写商铺状态', trigger: 'blur' },
+        ],
+      },
+      // 区域树选项
+      areaOptions: [],
+      areaList: [],
     }
   },
+  created () {
+    if (this.title === '修改商铺信息') {
+      this.form = {
+        ...this.form,
+        ...this.info,
+      }
+    }
+    this.getTreeselect();
+  },
   methods: {
+    /** 查询区域列表 */
+    getList() {
+      listArea().then(response => {
+        this.areaList = this.handleTree(response.data, "id", "pid");
+      });
+    },
+    /** 转换区域数据结构 */
+    normalizer(node) {
+      if (node.children && !node.children.length) {
+        delete node.children;
+      }
+      return {
+        id: node.id,
+        label: node.name,
+        children: node.children
+      };
+    },
+    /** 查询部门下拉树结构 */
+    getTreeselect() {
+      listArea().then(response => {
+        this.areaOptions = [];
+        const data = { id: 0, name: '顶级节点', children: [] };
+        data.children = this.handleTree(response.data, "id", "pid");
+        this.areaOptions.push(data);
+      });
+    },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {

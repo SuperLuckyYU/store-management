@@ -145,6 +145,7 @@ import StoreDetailDialog from '../../sections/StoreDetailDialog'
 import { listStore, getStore } from '@/api/business/store'
 import { updateArea, getArea } from "@/api/business/area"
 import { COLOR } from '../../constants/store'
+import "@riophae/vue-treeselect/dist/vue-treeselect.css"
 
 export default {
   name: 'FloorPlan',
@@ -202,8 +203,12 @@ export default {
     },
   },
   created () {
-    this.fetchRoomInfo()
-    this.fetchStroeList()
+    new Promise((resolve, reject) => {
+      this.fetchStroeList()
+      resolve(true)
+    }).then(() => {
+      this.fetchRoomInfo()
+    })
     this.getDicts('store_type').then(({data}) => {
       this.typeOptions = data
     })
@@ -216,8 +221,10 @@ export default {
       const res = await listStore({
         pageSize: 1000,
         pageNum: 1,
+        areaId: this.$route.query.id
       })
       this.storeOptions = res.rows
+
     },
     // 添加元素事件
     handleAddclick () {
@@ -318,6 +325,8 @@ export default {
     handleSubmitRoomInfo () {
       updateArea({
         id: this.$route.query.id,
+        pid: this.$route.query.pid,
+        name: this.$route.query.name,
         roomInfo: JSON.stringify(this.layouts),
       }).then(response => {
         this.msgSuccess("修改成功")
@@ -328,24 +337,42 @@ export default {
     async fetchRoomInfo () {
       const res = await getArea(this.$route.query.id)
       if (res.data.roomInfo && JSON.parse(res.data.roomInfo).length > 0) {
-        this.type = 'show'
-        const roomInfo = JSON.parse(res.data.roomInfo)
-        // 查询所有商铺的状态
-        const storeIds = this.filterStore(roomInfo)
-        const promises = storeIds.map(function (id) {
-          return getStore(id)
+        let roomInfo = JSON.parse(res.data.roomInfo)
+        // 删除layouts中已经不再的商铺
+        const allStoreIds = this.storeOptions.map(item => {
+          return item.id
         })
-        Promise.all(promises).then(rets => {
-          rets.map(({data}) => {
-            this.storeIdMapStatus[data.id] = data.status
-          })
-          roomInfo.map(item => {
-            item.storeStatus = this.storeIdMapStatus[item.storeId]
-          })
-          this.layouts = roomInfo
-        }).catch(function(reason){
-          console.log(reason)
+        roomInfo = roomInfo.map((layoutItem) => {
+          if (allStoreIds.indexOf(layoutItem.storeId) !== -1) {
+            return layoutItem
+          }
+          return ''
         })
+        const arr = roomInfo = []
+        for (let i = 0; i < roomInfo.length; i++) {
+          if (roomInfo[i] !== '') arr.push(roomInfo[i])
+        }
+        roomInfo = arr
+        if (roomInfo.length > 0) {
+          // 查询所有商铺的状态
+          const storeIds = this.filterStore(roomInfo)
+          const promises = storeIds.map(function (id) {
+            return getStore(id)
+          })
+          try {
+            const rets = await Promise.all(promises)
+            rets.map(({data}) => {
+              this.storeIdMapStatus[data.id] = data.status
+            })
+            roomInfo.map(item => {
+              item.storeStatus = this.storeIdMapStatus[item.storeId]
+            })
+            this.layouts = roomInfo
+            if (this.layouts.length > 0) this.type = 'show'
+          } catch (error) {
+            console.log(error)
+          }
+        }
       } else {
         this.type = 'add'
       }

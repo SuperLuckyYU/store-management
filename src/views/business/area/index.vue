@@ -85,7 +85,7 @@
       <el-table-column label="父id" align="center" prop="pid" />
       <el-table-column label="名称" align="center" prop="name">
         <template slot-scope="scope">
-          <router-link v-if="scope.row.ancestors.split(',').length === 3" :to="{ path: '/floor-plan', query: { id: scope.row.id }}">
+          <router-link v-if="scope.row.ancestors.split(',').length === 3" :to="{ path: '/floor-plan', query: { id: scope.row.id, name: scope.row.name, pid: scope.row.pid }}">
             <el-button type="text">{{scope.row.name}}</el-button>
           </router-link>
           <span v-else>{{scope.row.name}}</span>
@@ -261,14 +261,14 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
-	  this.getTreeselect();
+	    this.getTreeselect();
       this.open = true;
       this.title = "添加区域";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-	  this.getTreeselect();
+	    this.getTreeselect();
       if (row != null) {
         this.form.pid = row.id;
       }
