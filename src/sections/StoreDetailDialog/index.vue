@@ -46,8 +46,67 @@
         <el-col :span="8"><span class="label">备注：</span><span class="value">{{info.tenant.remark}}</span></el-col>
         <el-col :span="8"><span class="label">扩展1：</span><span class="value">{{info.tenant.extend1}}</span></el-col>
       </el-row>
-      <el-row class="row">
+      <el-row class="row" style="margin-bottom: 40px">
         <el-col :span="8"><span class="label">扩展2：</span><span class="value">{{info.tenant.extend2}}</span></el-col>
+      </el-row>
+    </template>
+    <template v-if="info.contract">
+      <el-divider class="info-title" content-position="left">合同信息</el-divider>
+      <el-row class="row" style="margin-top: 40px">
+        <el-col :span="8"><span class="label">合同编号：</span><span class="value">{{info.contract.contractNo}}</span></el-col>
+        <el-col :span="8"><span class="label">营业执照：</span><span class="value">{{info.contract.businessLicenseUrl}}</span></el-col>
+        <el-col :span="8"><span class="label">合同文件：</span><span class="value">{{info.contract.fileUrl}}</span></el-col>
+      </el-row>
+      <el-row class="row">
+        <el-col :span="8"><span class="label">下次营业执照审核日：</span><span class="value">{{info.contract.businessLicenseCheckDate}}</span></el-col>
+        <el-col :span="8"><span class="label">押金数：</span><span class="value">{{info.contract.deposit}}</span></el-col>
+        <el-col :span="8"><span class="label">租金到期日：</span><span class="value">{{info.contract.monthlyExpiresDate}}</span></el-col>
+      </el-row>
+      <el-row class="row">
+        <el-col :span="8"><span class="label">月租价格：</span><span class="value">{{info.contract.monthlyRental}}</span></el-col>
+        <el-col :span="8"><span class="label">待付物业费：</span><span class="value">{{info.contract.planProperty}}</span></el-col>
+        <el-col :span="8"><span class="label">签约日期：</span><span class="value">{{info.contract.signDate}}</span></el-col>
+      </el-row>
+      <el-row class="row">
+        <el-col :span="8"><span class="label">到期日期：</span><span class="value">{{info.contract.signExpiresDate}}</span></el-col>
+        <el-col :span="8"><span class="label">待付租金：</span><span class="value">{{info.contract.planRent}}</span></el-col>
+        <el-col :span="8"><span class="label">物业费：</span><span class="value">{{info.contract.property}}</span></el-col>
+      </el-row>
+      <el-row class="row">
+        <el-col :span="8"><span class="label">物业费到期日：</span><span class="value">{{info.contract.propertyExpiresDate}}</span></el-col>
+        <el-col :span="8"><span class="label">实付物业费：</span><span class="value">{{info.contract.realityProperty}}</span></el-col>
+        <el-col :span="8"><span class="label">实收租金：</span><span class="value">{{info.contract.realityRent}}</span></el-col>
+      </el-row>
+      <el-row class="row" style="margin-bottom: 40px">
+        <el-col :span="8"><span class="label">备注：</span><span class="value">{{info.contract.remark}}</span></el-col>
+        <el-col :span="8"><span class="label">扩展1：</span><span class="value">{{info.contract.extend1}}</span></el-col>
+        <el-col :span="8"><span class="label">扩展2：</span><span class="value">{{info.contract.extend2}}</span></el-col>
+      </el-row>
+    </template>
+    <template v-if="info.maintain">
+      <el-divider class="info-title" content-position="left">运维信息</el-divider>
+      <el-row class="row" style="margin-top: 40px">
+        <el-col :span="8"><span class="label">电路检修日期：</span><span class="value">{{info.maintain.electrical}}</span></el-col>
+        <el-col :span="8"><span class="label">电路下次检修时间：</span><span class="value">{{info.maintain.electricalNotice}}</span></el-col>
+        <el-col :span="8"><span class="label">灭火器更换日期：</span><span class="value">{{info.maintain.extinguisher}}</span></el-col>
+      </el-row>
+      <el-row class="row">
+        <el-col :span="8"><span class="label">下次灭火器更换日期：</span><span class="value">{{info.maintain.extinguisherNotice}}</span></el-col>
+        <el-col :span="8"><span class="label">其他1：</span><span class="value">{{info.maintain.other1}}</span></el-col>
+        <el-col :span="8"><span class="label">其他1自定义内容：</span><span class="value">{{info.maintain.other1Content}}</span></el-col>
+      </el-row>
+      <el-row class="row">
+        <el-col :span="8"><span class="label">其他1到期时间：</span><span class="value">{{info.maintain.other1Notice}}</span></el-col>
+        <el-col :span="8"><span class="label">其他2：</span><span class="value">{{info.maintain.other2}}</span></el-col>
+        <el-col :span="8"><span class="label">其他2自定义内容：</span><span class="value">{{info.maintain.other2Content}}</span></el-col>
+      </el-row>
+      <el-row class="row">
+        <el-col :span="8"><span class="label">其他2到期时间：</span><span class="value">{{info.maintain.other2Notice}}</span></el-col>
+        <el-col :span="8"><span class="label">备注：</span><span class="value">{{info.maintain.remark}}</span></el-col>
+        <el-col :span="8"><span class="label">扩展1：</span><span class="value">{{info.maintain.extend1}}</span></el-col>
+      </el-row>
+      <el-row class="row" style="margin-bottom: 40px">
+        <el-col :span="8"><span class="label">扩展2：</span><span class="value">{{info.maintain.extend2}}</span></el-col>
       </el-row>
     </template>
     <span slot="footer" class="dialog-footer">

@@ -203,10 +203,12 @@ export default {
     },
   },
   created () {
-    new Promise((resolve, reject) => {
-      this.fetchStroeList()
-      resolve(true)
-    }).then(() => {
+    listStore({
+      pageSize: 1000,
+      pageNum: 1,
+      areaId: this.$route.query.id
+    }).then((res) => {
+      this.storeOptions = res.rows
       this.fetchRoomInfo()
     })
     this.getDicts('store_type').then(({data}) => {
@@ -224,7 +226,6 @@ export default {
         areaId: this.$route.query.id
       })
       this.storeOptions = res.rows
-
     },
     // 添加元素事件
     handleAddclick () {
@@ -348,7 +349,7 @@ export default {
           }
           return ''
         })
-        const arr = roomInfo = []
+        const arr = []
         for (let i = 0; i < roomInfo.length; i++) {
           if (roomInfo[i] !== '') arr.push(roomInfo[i])
         }
