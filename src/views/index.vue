@@ -1,5 +1,5 @@
 <template>
-  <el-row class="tac">
+  <el-row class="tac" v-if="areaList.length > 0">
     <el-col :span="4">
       <ul class="menubar">
         <li class="menuitem" v-for="item in areaList" :key="item.id" @click.stop="handleMenuItemClick(item.id)">
@@ -27,7 +27,7 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="总房间数"
-                :value="1000"
+                :value="info.totalRoom"
                 suffix="间"
                 :value-style="{ color: '#2A92F6' }" />
             </el-card>
@@ -36,7 +36,7 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="已租间数"
-                :value="100"
+                :value="info.rentRoom"
                 suffix="间"
                 :value-style="{ color: '#3f8600' }" />
             </el-card>
@@ -45,8 +45,8 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="已租数占比"
-                :value="10"
-                suffix="%"
+                :value="info.rentPercent"
+                suffix=""
                 :value-style="{ color: '#cf1322' }" />
             </el-card>
           </el-col>
@@ -54,7 +54,7 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="空置间数"
-                :value="900"
+                :value="info.vacancyRoom"
                 suffix="间"
                 :value-style="{ color: '#745AF5' }" />
             </el-card>
@@ -65,8 +65,8 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="空置店铺占比"
-                :value="50"
-                suffix="%"
+                :value="info.vacancyPercent"
+                suffix=""
                 :value-style="{ color: '#2A92F6' }" />
             </el-card>
           </el-col>
@@ -74,7 +74,7 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="自用间数"
-                :value="30"
+                :value="info.oneselfRoom"
                 suffix="间"
                 :value-style="{ color: '#3f8600' }" />
             </el-card>
@@ -83,7 +83,7 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="维护间数"
-                :value="10"
+                :value="info.maintainRoom"
                 suffix="间"
                 :value-style="{ color: '#cf1322' }" />
             </el-card>
@@ -92,7 +92,7 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="其他（其他状态的间数）"
-                :value="200"
+                :value="info.otherRoom"
                 suffix="间"
                 :value-style="{ color: '#745AF5' }" />
             </el-card>
@@ -108,7 +108,7 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="总面积"
-                :value="1000"
+                :value="info.totalAcreage"
                 suffix="㎡"
                 :value-style="{ color: '#2A92F6' }" />
             </el-card>
@@ -117,7 +117,7 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="已租面积"
-                :value="100"
+                :value="info.rentAcreage"
                 suffix="㎡"
                 :value-style="{ color: '#3f8600' }" />
             </el-card>
@@ -126,7 +126,7 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="空置面积"
-                :value="10"
+                :value="info.vacancyAcreage"
                 suffix="㎡"
                 :value-style="{ color: '#cf1322' }" />
             </el-card>
@@ -135,7 +135,7 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="自用面积"
-                :value="900"
+                :value="info.oneselfAcreage"
                 suffix="㎡"
                 :value-style="{ color: '#745AF5' }" />
             </el-card>
@@ -146,7 +146,7 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="维护面积"
-                :value="50"
+                :value="info.maintainAcreage"
                 suffix="㎡"
                 :value-style="{ color: '#2A92F6' }" />
             </el-card>
@@ -155,7 +155,7 @@
             <el-card class="content-item" :hoverable="true">
               <base-statistic
                 title="其他"
-                :value="200"
+                :value="info.otherAcreage"
                 suffix="㎡"
                 :value-style="{ color: '#3f8600' }" />
             </el-card>
@@ -174,33 +174,33 @@
         <div class="descriptions-content">
           <div class="descriptions-row d-flex">
             <div class="descriptions-content-item">租金间数</div>
-            <div class="descriptions-content-item">34</div>
-            <div class="descriptions-content-item">22</div>
+            <div class="descriptions-content-item">{{ info.realityRentMoneyRoom || 0 }}</div>
+            <div class="descriptions-content-item">{{ info.planRentMoneyRoom || 0 }}</div>
           </div>
           <div class="descriptions-row d-flex">
             <div class="descriptions-content-item">租金总数</div>
-            <div class="descriptions-content-item">￥1800.00</div>
-            <div class="descriptions-content-item">￥16000.00</div>
+            <div class="descriptions-content-item">￥{{ info.realityRentMoney || 0 }}</div>
+            <div class="descriptions-content-item">￥{{ info.planRentMoney || 0 }}</div>
           </div>
           <div class="descriptions-row d-flex">
             <div class="descriptions-content-item">租金占比</div>
-            <div class="descriptions-content-item">70%</div>
-            <div class="descriptions-content-item">30%</div>
+            <div class="descriptions-content-item">{{ info.realityRentMoneyPercent || 0 }}</div>
+            <div class="descriptions-content-item">--</div>
           </div>
           <div class="descriptions-row d-flex">
             <div class="descriptions-content-item">物业费间数</div>
-            <div class="descriptions-content-item">500</div>
-            <div class="descriptions-content-item">200</div>
+            <div class="descriptions-content-item">{{ info.realityPropertyMoneyRoom || 0 }}</div>
+            <div class="descriptions-content-item">{{ info.planPropertyMoneyRoom || 0 }}</div>
           </div>
           <div class="descriptions-row d-flex">
             <div class="descriptions-content-item">物业费总数</div>
-            <div class="descriptions-content-item">￥11000.00</div>
-            <div class="descriptions-content-item">￥1800.00</div>
+            <div class="descriptions-content-item">￥{{ info.realityPropertyMoney || 0 }}</div>
+            <div class="descriptions-content-item">￥{{ info.planPropertyMoney || 0 }}</div>
           </div>
           <div class="descriptions-row d-flex">
             <div class="descriptions-content-item">物业费占比</div>
-            <div class="descriptions-content-item">10%</div>
-            <div class="descriptions-content-item">90%</div>
+            <div class="descriptions-content-item">{{ info.realityPropertyPercent || 0 }}</div>
+            <div class="descriptions-content-item">--</div>
           </div>
         </div>
       </div>
@@ -209,84 +209,38 @@
       </div>
       <div class="contract-info">
         <el-row class="row">
-          <el-col :span="8"><span class="label">合同已到期：</span><span class="value">10</span></el-col>
-          <el-col :span="8"><span class="label">合同即将：</span><span class="value">46</span></el-col>
-          <el-col :span="8"><span class="label">租金已到期：</span><span class="value">13</span></el-col>
+          <el-col :span="8"><span class="label">合同已到期：</span><span class="value">{{ info.signExpireRoom || 0 }}</span></el-col>
+          <el-col :span="8"><span class="label">合同即将到期：</span><span class="value">{{ info.upcomingSignExpireRoom || 0 }}</span></el-col>
+          <el-col :span="8"><span class="label">租金已到期：</span><span class="value">{{ info.rentMoneyExpireRoom || 0 }}</span></el-col>
         </el-row>
         <el-row class="row">
-          <el-col :span="8"><span class="label">租金即将到期：</span><span class="value">10</span></el-col>
-          <el-col :span="8"><span class="label">物业费已到期：</span><span class="value">46</span></el-col>
-          <el-col :span="8"><span class="label">物业费即将到期：</span><span class="value">13</span></el-col>
+          <el-col :span="8"><span class="label">租金即将到期：</span><span class="value">{{ info.upcomingRentMoneyExpireRoom || 0 }}</span></el-col>
+          <el-col :span="8"><span class="label">物业费已到期：</span><span class="value">{{ info.propertyExpireRoom || 0 }}</span></el-col>
+          <el-col :span="8"><span class="label">物业费即将到期：</span><span class="value">{{ info.upcomingPropertyExpireRoom || 0 }}</span></el-col>
         </el-row>
         <el-row class="row">
-          <el-col :span="8"><span class="label">营业执照已到期：</span><span class="value">10</span></el-col>
-          <el-col :span="8"><span class="label">营业执照即将审核：</span><span class="value">46</span></el-col>
-          <el-col :span="8"><span class="label">电路检修已到期：</span><span class="value">13</span></el-col>
+          <el-col :span="8"><span class="label">营业执照已到期：</span><span class="value">{{ info.businessLicenseExpireRoom || 0 }}</span></el-col>
+          <el-col :span="8"><span class="label">营业执照即将审核：</span><span class="value">{{ info.upcomingBusinessLicenseExpireRoom || 0 }}</span></el-col>
+          <el-col :span="8"><span class="label">电路检修已到期：</span><span class="value">{{ info.electricalMaintenanceExpireRoom || 0 }}</span></el-col>
         </el-row>
         <el-row class="row">
-          <el-col :span="8"><span class="label">电路检修即将检修：</span><span class="value">10</span></el-col>
-          <el-col :span="8"><span class="label">灭火器更换：</span><span class="value">46</span></el-col>
-          <el-col :span="8"><span class="label">其他1已到期：</span><span class="value">13</span></el-col>
+          <el-col :span="8"><span class="label">电路检修即将检修：</span><span class="value">{{ info.upcomingElectricalMaintenanceExpireRoom || 0 }}</span></el-col>
+          <el-col :span="8"><span class="label">灭火器更换：</span><span class="value">{{ info.extinguisherExpireRoom || 0 }}</span></el-col>
+          <el-col :span="8"><span class="label">其他1已到期：</span><span class="value">{{ info.other1ExpireRoom || 0 }}</span></el-col>
         </el-row>
         <el-row class="row">
-          <el-col :span="8"><span class="label">其他1即将到期：</span><span class="value">10</span></el-col>
-          <el-col :span="8"><span class="label">其他2已到期：</span><span class="value">46</span></el-col>
-          <el-col :span="8"><span class="label">其他2即将到期：</span><span class="value">13</span></el-col>
+          <el-col :span="8"><span class="label">其他1即将到期：</span><span class="value">{{ info.upcomingOther1ExpireRoom || 0 }}</span></el-col>
+          <el-col :span="8"><span class="label">其他2已到期：</span><span class="value">{{ info.other2ExpireRoom || 0 }}</span></el-col>
+          <el-col :span="8"><span class="label">其他2即将到期：</span><span class="value">{{ info.upcomingOther2ExpireRoom || 0 }}</span></el-col>
         </el-row>
       </div>
-      <!-- <a-descriptions bordered class="mt-2">
-        <a-descriptions-item label="合同已到期">
-          10
-        </a-descriptions-item>
-        <a-descriptions-item label="合同即将">
-          46
-        </a-descriptions-item>
-        <a-descriptions-item label="租金已到期">
-          13
-        </a-descriptions-item>
-        <a-descriptions-item label="租金即将">
-          89
-        </a-descriptions-item>
-        <a-descriptions-item label="物业费已到期">
-          33
-        </a-descriptions-item>
-        <a-descriptions-item label="物业费即将到期">
-          40
-        </a-descriptions-item>
-        <a-descriptions-item label="营业执照已到期">
-          10
-        </a-descriptions-item>
-        <a-descriptions-item label="营业执照即将审核">
-          55
-        </a-descriptions-item>
-        <a-descriptions-item label="电路检修已到期">
-          54
-        </a-descriptions-item>
-        <a-descriptions-item label="电路检修即将检修">
-          24
-        </a-descriptions-item>
-        <a-descriptions-item label="灭火器更换">
-          98
-        </a-descriptions-item>
-        <a-descriptions-item label="其他1已到期">
-          57
-        </a-descriptions-item>
-        <a-descriptions-item label="其他1即将到期">
-          121
-        </a-descriptions-item>
-        <a-descriptions-item label="其他1已到期">
-          43
-        </a-descriptions-item>
-        <a-descriptions-item label="其他2即将到期">
-          86
-        </a-descriptions-item>
-      </a-descriptions> -->
     </el-col>
   </el-row>
 </template>
 
 <script>
 import { listArea } from "@/api/business/area"
+import { getStatisticInfo } from '@/api/business/statistics'
 import BaseStatistic from '../components/BaseStatistic'
 
 export default {
@@ -298,20 +252,29 @@ export default {
     return {
       areaList: [],
       activedId: '',
+      info: {},
     }
   },
   created() {
     this.getList()
   },
   methods: {
-    getList() {
-      listArea({}).then(response => {
-        this.areaList = this.handleTree(response.data, "id", "pid")
-      })
+    async getList() {
+      const { data } = await listArea({})
+      this.areaList = this.handleTree(data, "id", "pid")
+      if (this.areaList.length > 0) {
+        this.activedId = this.areaList[0].id
+        this.getStatisticInfo(this.activedId)
+      }
+    },
+    async getStatisticInfo (id) {
+      const { data } = await getStatisticInfo(id)
+      this.info = data
+      console.log(data)
     },
     handleMenuItemClick (id) {
-      console.log(id)
       this.activedId = id
+      this.getStatisticInfo(id)
     },
   },
 };

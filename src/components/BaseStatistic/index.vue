@@ -21,6 +21,7 @@ export default {
     },
     value: {
       type: [Number, String],
+      default: 0,
     },
     suffix: {
       type: String,

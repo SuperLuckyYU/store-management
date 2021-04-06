@@ -1,23 +1,25 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="商铺id" prop="storeId">
-        <el-input
-          v-model="queryParams.storeId"
-          placeholder="请输入商铺id"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="140px">
+      <el-form-item label="商铺" prop="storeId">
+        <el-select v-model="queryParams.storeId" filterable placeholder="请选择商铺" @keyup.enter.native="handleQuery">
+          <el-option
+            v-for="item in storeList"
+            :key="item.id"
+            :label="item.storeName"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="租户id" prop="tenantId">
-        <el-input
-          v-model="queryParams.tenantId"
-          placeholder="请输入租户id"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="租户" prop="tenantId">
+        <el-select v-model="queryParams.tenantId" filterable placeholder="请选择租户" @keyup.enter.native="handleQuery">
+          <el-option
+            v-for="item in tenantList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="合同编号" prop="contractNo">
         <el-input
@@ -222,8 +224,8 @@
     <el-table v-loading="loading" :data="contractList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="商铺id" align="center" prop="storeId" />
-      <el-table-column label="租户id" align="center" prop="tenantId" />
+      <el-table-column label="商铺" align="center" prop="storeName" />
+      <el-table-column label="租户" align="center" prop="tenantName" />
       <el-table-column label="合同编号" align="center" prop="contractNo" />
       <el-table-column label="签约日期" align="center" prop="signDate" width="180">
         <template slot-scope="scope">
@@ -294,11 +296,25 @@
     <!-- 添加或修改合同对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="商铺id" prop="storeId">
-          <el-input v-model="form.storeId" placeholder="请输入商铺id" />
+        <el-form-item label="商铺" prop="storeId">
+          <el-select v-model="form.storeId" filterable placeholder="请选择商铺">
+            <el-option
+              v-for="item in storeList"
+              :key="item.id"
+              :label="item.storeName"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="租户id" prop="tenantId">
-          <el-input v-model="form.tenantId" placeholder="请输入租户id" />
+        <el-form-item label="租户" prop="tenantId">
+          <el-select v-model="form.tenantId" filterable placeholder="请选择租户">
+            <el-option
+              v-for="item in tenantList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="合同编号" prop="contractNo">
           <el-input v-model="form.contractNo" placeholder="请输入合同编号" />
@@ -391,6 +407,8 @@
 <script>
 import { listContract, getContract, delContract, addContract, updateContract, exportContract } from "@/api/business/contract";
 import FileUpload from '@/components/FileUpload';
+import { listStore } from "@/api/business/store";
+import { listTenant } from "@/api/business/tenant";
 
 export default {
   name: "Contract",
@@ -447,13 +465,35 @@ export default {
       form: {},
       // 表单校验
       rules: {
-      }
+      },
+      storeList: [],
+      tenantList: [],
     };
   },
   created() {
     this.getList();
+    this.getStoreList();
+    this.getTenantList();
   },
   methods: {
+    /** 查询商铺列表 */
+    getStoreList() {
+      listStore({
+        pageNum: 1,
+        pageSize: 10000,
+      }).then(response => {
+        this.storeList = response.rows;
+      });
+    },
+    /** 查询租户列表 */
+    getTenantList() {
+      listTenant({
+        pageNum: 1,
+        pageSize: 10000,
+      }).then(response => {
+        this.tenantList = response.rows;
+      });
+    },
     /** 查询合同列表 */
     getList() {
       this.loading = true;

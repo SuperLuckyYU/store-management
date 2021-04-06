@@ -103,13 +103,13 @@
       </template>
     </div>
     <el-dialog
-      title="绑定商户信息"
+      title="绑定商铺信息"
       :visible.sync="openDialog"
       width="500px"
       append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="商户名称" prop="storeId">
-          <el-select v-model="form.storeId" filterable placeholder="请选择绑定商户">
+        <el-form-item label="商铺名称" prop="storeId">
+          <el-select v-model="form.storeId" filterable placeholder="请选择绑定商铺">
             <el-option
               v-for="item in storeOptions"
               :key="item.id"
