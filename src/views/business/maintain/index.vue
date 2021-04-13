@@ -69,19 +69,19 @@
           placeholder="选择其他2">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="其他1自定义内容" prop="other1Content">
+      <el-form-item label="提醒内容1" prop="other1Content">
         <el-input
           v-model="queryParams.other1Content"
-          placeholder="请输入其他1自定义内容"
+          placeholder="请输入提醒内容1"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="其他2自定义内容" prop="other2Content">
+      <el-form-item label="提醒内容2" prop="other2Content">
         <el-input
           v-model="queryParams.other2Content"
-          placeholder="请输入其他2自定义内容"
+          placeholder="请输入提醒内容2"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
