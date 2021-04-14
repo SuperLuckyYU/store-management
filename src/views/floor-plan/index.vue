@@ -85,7 +85,10 @@
           :key="index">
           <vue-draggable-resizable
             class-name="draggable-item"
-            :style="{background: item.storeStatus && color[item.storeStatus].color}"
+            :style="{
+              background: item.storeStatus && color[item.storeStatus].color,
+              animation: item.isExpire ? `ChangeColor${item.storeStatus} 2s infinite linear` : 'none'
+            }"
             @activated="handleAreaItemClick(item.storeId)"
             :w="item.w"
             :h="item.h"
@@ -367,6 +370,7 @@ export default {
             })
             roomInfo.map(item => {
               item.storeStatus = this.storeIdMapStatus[item.storeId]
+              item.isExpire = true
             })
             this.layouts = roomInfo
             if (this.layouts.length > 0) this.type = 'show'
@@ -435,6 +439,61 @@ export default {
     margin: auto;
     background: rgb(238, 245, 254);
     border: 1px solid #EBEEF5;
+  }
+  @-webkit-keyframes ChangeColor0 {
+    0%{
+      background: #67C23A;
+    }
+    50%{
+      background: #E6A23C;
+    }
+    100%{
+      background: #67C23A;
+    }
+  }
+  @-webkit-keyframes ChangeColor1 {
+    0%{
+      background: #FFFFFF;
+    }
+    50%{
+      background: #E6A23C;
+    }
+    100%{
+      background: #FFFFFF;
+    }
+  }
+  @-webkit-keyframes ChangeColor2 {
+    0%{
+      background: #409EFF;
+    }
+    50%{
+      background: #E6A23C;
+    }
+    100%{
+      background: #409EFF;
+    }
+  }
+  @-webkit-keyframes ChangeColor3 {
+    0%{
+      background: #909399;
+    }
+    50%{
+      background: #E6A23C;
+    }
+    100%{
+      background: #909399;
+    }
+  }
+  @-webkit-keyframes ChangeColor4 {
+    0%{
+      background: #303133;
+    }
+    50%{
+      background: #E6A23C;
+    }
+    100%{
+      background: #303133;
+    }
   }
 </style>
 
