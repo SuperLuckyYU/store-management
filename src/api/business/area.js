@@ -51,3 +51,11 @@ export function exportArea(query) {
     params: query
   })
 }
+
+// 查询区域下商铺列表
+export function queryAreaStoreList(id) {
+  return request({
+    url: 'business/area/queryAreaStoreList/' + id,
+    method: 'get',
+  })
+}

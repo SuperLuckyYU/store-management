@@ -87,7 +87,7 @@
             class-name="draggable-item"
             :style="{
               background: item.storeStatus && color[item.storeStatus].color,
-              animation: item.isExpire ? `ChangeColor${item.storeStatus} 2s infinite linear` : 'none'
+              animation: item.expiresDateStatus === '1' || item.expiresDateStatus === '2' ? `ChangeColor${item.storeStatus + item.expiresDateStatus} 2s infinite linear` : 'none'
             }"
             @activated="handleAreaItemClick(item.storeId)"
             :w="item.w"
@@ -145,8 +145,8 @@
 import VueDraggableResizable from 'vue-draggable-resizable'
 import AddStroeDialog from '../../sections/AddStoreDialog'
 import StoreDetailDialog from '../../sections/StoreDetailDialog'
-import { listStore, getStore } from '@/api/business/store'
-import { updateArea, getArea } from "@/api/business/area"
+import { getStore } from '@/api/business/store'
+import { updateArea, getArea, queryAreaStoreList } from "@/api/business/area"
 import { COLOR } from '../../constants/store'
 import "@riophae/vue-treeselect/dist/vue-treeselect.css"
 
@@ -206,12 +206,8 @@ export default {
     },
   },
   created () {
-    listStore({
-      pageSize: 1000,
-      pageNum: 1,
-      areaId: this.$route.query.id
-    }).then((res) => {
-      this.storeOptions = res.rows
+    queryAreaStoreList(this.$route.query.id).then((res) => {
+      this.storeOptions = res.data
       this.fetchRoomInfo()
     })
     this.getDicts('store_type').then(({data}) => {
@@ -223,12 +219,8 @@ export default {
   },
   methods: {
     async fetchStroeList () {
-      const res = await listStore({
-        pageSize: 1000,
-        pageNum: 1,
-        areaId: this.$route.query.id
-      })
-      this.storeOptions = res.rows
+      const res = await queryAreaStoreList(this.$route.query.id)
+      this.storeOptions = res.data
     },
     // 添加元素事件
     handleAddclick () {
@@ -370,7 +362,7 @@ export default {
             })
             roomInfo.map(item => {
               item.storeStatus = this.storeIdMapStatus[item.storeId]
-              item.isExpire = true
+              item.expiresDateStatus = this.storeObj[item.storeId].expiresDateStatus
             })
             this.layouts = roomInfo
             if (this.layouts.length > 0) this.type = 'show'
@@ -440,7 +432,7 @@ export default {
     background: rgb(238, 245, 254);
     border: 1px solid #EBEEF5;
   }
-  @-webkit-keyframes ChangeColor0 {
+  @-webkit-keyframes ChangeColor02 {
     0%{
       background: #67C23A;
     }
@@ -451,7 +443,7 @@ export default {
       background: #67C23A;
     }
   }
-  @-webkit-keyframes ChangeColor1 {
+  @-webkit-keyframes ChangeColor12 {
     0%{
       background: #FFFFFF;
     }
@@ -462,7 +454,7 @@ export default {
       background: #FFFFFF;
     }
   }
-  @-webkit-keyframes ChangeColor2 {
+  @-webkit-keyframes ChangeColor22 {
     0%{
       background: #409EFF;
     }
@@ -473,7 +465,7 @@ export default {
       background: #409EFF;
     }
   }
-  @-webkit-keyframes ChangeColor3 {
+  @-webkit-keyframes ChangeColor32 {
     0%{
       background: #909399;
     }
@@ -484,12 +476,67 @@ export default {
       background: #909399;
     }
   }
-  @-webkit-keyframes ChangeColor4 {
+  @-webkit-keyframes ChangeColor42 {
     0%{
       background: #303133;
     }
     50%{
       background: #E6A23C;
+    }
+    100%{
+      background: #303133;
+    }
+  }
+    @-webkit-keyframes ChangeColor01 {
+    0%{
+      background: #67C23A;
+    }
+    50%{
+      background: red;
+    }
+    100%{
+      background: #67C23A;
+    }
+  }
+  @-webkit-keyframes ChangeColor11 {
+    0%{
+      background: #FFFFFF;
+    }
+    50%{
+      background: red;
+    }
+    100%{
+      background: #FFFFFF;
+    }
+  }
+  @-webkit-keyframes ChangeColor21 {
+    0%{
+      background: #409EFF;
+    }
+    50%{
+      background: red;
+    }
+    100%{
+      background: #409EFF;
+    }
+  }
+  @-webkit-keyframes ChangeColor31 {
+    0%{
+      background: #909399;
+    }
+    50%{
+      background: red;
+    }
+    100%{
+      background: #909399;
+    }
+  }
+  @-webkit-keyframes ChangeColor41 {
+    0%{
+      background: #303133;
+    }
+    50%{
+      background: red;
     }
     100%{
       background: #303133;
