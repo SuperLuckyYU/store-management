@@ -6,17 +6,7 @@
           <el-option
             v-for="item in storeList"
             :key="item.id"
-            :label="item.storeName"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="租户" prop="tenantId">
-        <el-select v-model="queryParams.tenantId" filterable placeholder="请选择租户" @keyup.enter.native="handleQuery">
-          <el-option
-            v-for="item in tenantList"
-            :key="item.id"
-            :label="item.name"
+            :label="item.storeNo"
             :value="item.id">
           </el-option>
         </el-select>
@@ -185,8 +175,7 @@
     <el-table v-loading="loading" :data="maintainList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="商铺" align="center" prop="storeName" />
-      <el-table-column label="租户" align="center" prop="tenantName" />
+      <el-table-column label="商铺" align="center" prop="storeNo" />
       <el-table-column label="电路检修日期" align="center" prop="electrical" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.electrical, '{y}-{m}-{d}') }}</span>
@@ -269,17 +258,7 @@
             <el-option
               v-for="item in storeList"
               :key="item.id"
-              :label="item.storeName"
-              :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="租户" prop="tenantId">
-          <el-select v-model="form.tenantId" filterable placeholder="请选择租户">
-            <el-option
-              v-for="item in tenantList"
-              :key="item.id"
-              :label="item.name"
+              :label="item.storeNo"
               :value="item.id">
             </el-option>
           </el-select>
@@ -406,7 +385,6 @@ export default {
         pageNum: 1,
         pageSize: 10,
         storeId: null,
-        tenantId: null,
         electrical: null,
         electricalNotice: null,
         extinguisher: null,
@@ -473,7 +451,6 @@ export default {
       this.form = {
         id: null,
         storeId: null,
-        tenantId: null,
         electrical: null,
         electricalNotice: null,
         extinguisher: null,

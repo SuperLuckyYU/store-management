@@ -8,9 +8,6 @@
         <el-form-item label="商铺编号" prop="storeNo">
           <el-input v-model="form.storeNo" placeholder="请输入商铺编号" />
         </el-form-item>
-        <el-form-item label="商铺名称" prop="storeName">
-          <el-input v-model="form.storeName" placeholder="请输入商铺名称" />
-        </el-form-item>
         <el-form-item label="商铺类型" prop="type">
           <el-select v-model="form.type" placeholder="请选择商铺类型">
             <el-option
@@ -92,9 +89,6 @@ export default {
         ],
         storeNo: [
           { required: true, message: '请填写商铺编号', trigger: 'blur' },
-        ],
-        storeName: [
-          { required: true, message: '请填写商铺名称', trigger: 'blur' },
         ],
         type: [
           { required: true, message: '请填写商铺类型', trigger: 'blur' },

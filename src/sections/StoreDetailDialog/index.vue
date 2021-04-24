@@ -15,17 +15,16 @@
     <template v-if="info.store">
       <el-divider class="info-title" content-position="left">商铺信息</el-divider>
       <el-row class="row" style="margin-top: 40px">
-        <el-col :span="8"><span class="label">商铺名称：</span><span class="value">{{info.store.storeName}}</span></el-col>
         <el-col :span="8"><span class="label">商铺编号：</span><span class="value">{{info.store.storeNo}}</span></el-col>
         <el-col :span="8"><span class="label">商铺类型：</span><span class="value">{{storeTypeFormat(info.store.type)}}</span></el-col>
+        <el-col :span="8"><span class="label">商铺面积：</span><span class="value">{{info.store.acreage}}</span></el-col>
       </el-row>
       <el-row class="row">
-        <el-col :span="8"><span class="label">商铺面积：</span><span class="value">{{info.store.acreage}}</span></el-col>
         <el-col :span="8"><span class="label">商铺位置：</span><span class="value">{{info.store.location}}</span></el-col>
         <el-col :span="8"><span class="label">商铺状态：</span><span class="value">{{storeStatusFormat(info.store.status)}}</span></el-col>
+        <el-col :span="8"><span class="label">商铺扩展1：</span><span class="value">{{info.store.extend1}}</span></el-col>
       </el-row>
       <el-row class="row" style="margin-bottom: 40px">
-        <el-col :span="8"><span class="label">商铺扩展1：</span><span class="value">{{info.store.extend1}}</span></el-col>
         <el-col :span="8"><span class="label">商铺扩展2：</span><span class="value">{{info.store.extend2}}</span></el-col>
       </el-row>
     </template>

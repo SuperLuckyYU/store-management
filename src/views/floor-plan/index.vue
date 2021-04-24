@@ -71,7 +71,7 @@
             @activated="onActivated(index)"
             @deactivated="onDeactivated(index)">
             {{
-              index === 0 ? item.storeName : layouts[index-1].storeName !== item.storeName ? item.storeName : ''
+              index === 0 ? item.storeNo : layouts[index-1].storeNo !== item.storeNo ? item.storeNo : ''
             }}
           </vue-draggable-resizable>
         </div>
@@ -99,7 +99,7 @@
             :draggable="false"
             :resizable="false">
             {{
-              index === 0 ? item.storeName : layouts[index-1].storeName !== item.storeName ? item.storeName : ''
+              index === 0 ? item.storeNo : layouts[index-1].storeNo !== item.storeNo ? item.storeNo : ''
             }}
           </vue-draggable-resizable>
         </div>
@@ -116,7 +116,7 @@
             <el-option
               v-for="item in storeOptions"
               :key="item.id"
-              :label="item.storeName"
+              :label="item.storeNo"
               :value="item.id">
             </el-option>
           </el-select>
@@ -173,7 +173,7 @@ export default {
         //   x: 20,
         //   y: 20,
         //   active: false,
-        //   storeName: '',
+        //   storeNo: '',
         //   storeId: '',
         // },
       ],
@@ -230,7 +230,7 @@ export default {
         x: 20,
         y: 0,
         active: true,
-        storeName: this.storeObj[this.form.storeId].storeName,
+        storeNo: this.storeObj[this.form.storeId].storeNo,
         storeId: this.form.storeId,
       })
     },
@@ -326,7 +326,7 @@ export default {
         roomInfo: JSON.stringify(this.layouts),
       }).then(response => {
         this.msgSuccess("修改成功")
-        this.$router.push('/business/area')
+        this.$router.go(0)
       });
     },
     // 根据区域id查询房间信息
@@ -414,7 +414,7 @@ export default {
     }
     .draggable-item-wrapper {
       width: 100%;
-      height: 100;
+      height: 1px;
       position: absolute;
       top: 0;
       left: 0;
@@ -422,7 +422,7 @@ export default {
         border: none;
         background-color: rgb(191, 191, 191) ;
         text-align: center;
-        color: white;
+        color: rgb(27, 89, 162);
       }
     }
   }

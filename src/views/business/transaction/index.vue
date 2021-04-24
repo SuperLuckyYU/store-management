@@ -1,16 +1,16 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="合同id" prop="contractId">
+      <el-form-item label="合同编号" prop="contractNo">
         <el-input
-          v-model="queryParams.contractId"
-          placeholder="请输入合同id"
+          v-model="queryParams.contractNo"
+          placeholder="请输入合同编号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="租户" prop="tenantId">
+      <!-- <el-form-item label="租户" prop="tenantId">
         <el-select v-model="queryParams.tenantId" filterable placeholder="请选择租户" @keyup.enter.native="handleQuery">
           <el-option
             v-for="item in tenantList"
@@ -19,17 +19,17 @@
             :value="item.id">
           </el-option>
         </el-select>
-      </el-form-item>
-      <el-form-item label="商铺" prop="storeId">
+      </el-form-item> -->
+      <!-- <el-form-item label="商铺" prop="storeId">
         <el-select v-model="queryParams.storeId" filterable placeholder="请选择商铺" @keyup.enter.native="handleQuery">
           <el-option
             v-for="item in storeList"
             :key="item.id"
-            :label="item.storeName"
+            :label="item.storeNo"
             :value="item.id">
           </el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="金额" prop="money">
         <el-input
           v-model="queryParams.money"
@@ -85,16 +85,6 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['business:transaction:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
           type="success"
           plain
           icon="el-icon-edit"
@@ -131,9 +121,9 @@
     <el-table v-loading="loading" :data="transactionList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="合同id" align="center" prop="contractId" />
-      <el-table-column label="租户" align="center" prop="tenantName" />
-      <el-table-column label="商铺" align="center" prop="storeName" />
+      <el-table-column label="合同编号" align="center" prop="contractNo" />
+      <!-- <el-table-column label="租户" align="center" prop="tenantName" /> -->
+      <!-- <el-table-column label="商铺" align="center" prop="storeNo" /> -->
       <el-table-column label="金额" align="center" prop="money" />
       <el-table-column label="类型" align="center" prop="type" :formatter="typeFormat" />
       <el-table-column label="所属部门" align="center" prop="deptId" />
@@ -171,10 +161,10 @@
     <!-- 添加或修改交易对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="合同id" prop="contractId">
-          <el-input v-model="form.contractId" placeholder="请输入合同id" />
+        <el-form-item label="合同id" prop="contractNo">
+          <el-input v-model="form.contractNo" placeholder="请输入合同编号" />
         </el-form-item>
-        <el-form-item label="租户" prop="tenantId">
+        <!-- <el-form-item label="租户" prop="tenantId">
           <el-select v-model="form.tenantId" filterable placeholder="请选择租户">
             <el-option
               v-for="item in tenantList"
@@ -189,11 +179,11 @@
             <el-option
               v-for="item in storeList"
               :key="item.id"
-              :label="item.storeName"
+              :label="item.storeNo"
               :value="item.id">
             </el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="金额" prop="money">
           <el-input v-model="form.money" placeholder="请输入金额" />
         </el-form-item>
@@ -260,9 +250,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        contractId: null,
-        tenantId: null,
-        storeId: null,
+        contractNo: null,
         money: null,
         type: null,
         deptId: null,
@@ -280,31 +268,29 @@ export default {
   },
   created() {
     this.getList();
-    this.getStoreList();
-    this.getTenantList();
     this.getDicts("transaction_type").then(response => {
       this.typeOptions = response.data;
     });
   },
   methods: {
     /** 查询商铺列表 */
-    getStoreList() {
-      listStore({
-        pageNum: 1,
-        pageSize: 10000,
-      }).then(response => {
-        this.storeList = response.rows;
-      });
-    },
+    // getStoreList() {
+    //   listStore({
+    //     pageNum: 1,
+    //     pageSize: 10000,
+    //   }).then(response => {
+    //     this.storeList = response.rows;
+    //   });
+    // },
     /** 查询租户列表 */
-    getTenantList() {
-      listTenant({
-        pageNum: 1,
-        pageSize: 10000,
-      }).then(response => {
-        this.tenantList = response.rows;
-      });
-    },
+    // getTenantList() {
+    //   listTenant({
+    //     pageNum: 1,
+    //     pageSize: 10000,
+    //   }).then(response => {
+    //     this.tenantList = response.rows;
+    //   });
+    // },
     /** 查询交易列表 */
     getList() {
       this.loading = true;
@@ -327,9 +313,7 @@ export default {
     reset() {
       this.form = {
         id: null,
-        contractId: null,
-        tenantId: null,
-        storeId: null,
+        contractNo: null,
         money: null,
         type: null,
         createBy: null,

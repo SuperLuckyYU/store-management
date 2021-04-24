@@ -19,15 +19,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="商铺名称" prop="storeName">
-        <el-input
-          v-model="queryParams.storeName"
-          placeholder="请输入商铺名称"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="商铺类型" prop="type">
         <el-select v-model="queryParams.type" placeholder="请选择商铺类型" clearable size="small">
           <el-option
@@ -150,7 +141,6 @@
       <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="区域id" align="center" prop="areaId" />
       <el-table-column label="商铺编号" align="center" prop="storeNo" />
-      <el-table-column label="商铺名称" align="center" prop="storeName" />
       <el-table-column label="商铺类型" align="center" prop="type" :formatter="typeFormat" />
       <el-table-column label="商铺状态" align="center" prop="status" :formatter="statusFormat" />
       <el-table-column label="商铺面积" align="center" prop="acreage" />
@@ -249,7 +239,6 @@ export default {
         pageSize: 10,
         areaId: null,
         storeNo: null,
-        storeName: null,
         type: null,
         status: null,
         acreage: null,

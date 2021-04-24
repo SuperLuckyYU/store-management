@@ -6,7 +6,7 @@
           <el-option
             v-for="item in storeList"
             :key="item.id"
-            :label="item.storeName"
+            :label="item.storeNo"
             :value="item.id">
           </el-option>
         </el-select>
@@ -106,15 +106,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="实收租金" prop="realityRent">
-        <el-input
-          v-model="queryParams.realityRent"
-          placeholder="请输入实收租金"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="待付物业费" prop="planProperty">
         <el-input
           v-model="queryParams.planProperty"
@@ -186,6 +177,16 @@
           v-hasPermi="['business:contract:add']"
         >新增</el-button>
       </el-col>
+      <!-- <el-col :span="1.5">
+        <el-button
+          type="primary"
+          plain
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAddTransaction"
+          v-hasPermi="['business:contract:add']"
+        >添加交易</el-button>
+      </el-col> -->
       <el-col :span="1.5">
         <el-button
           type="success"
@@ -224,7 +225,7 @@
     <el-table v-loading="loading" :data="contractList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="商铺" align="center" prop="storeName" />
+      <el-table-column label="商铺" align="center" prop="storeNo" />
       <el-table-column label="租户" align="center" prop="tenantName" />
       <el-table-column label="合同编号" align="center" prop="contractNo" />
       <el-table-column label="签约日期" align="center" prop="signDate" width="180">
@@ -258,7 +259,6 @@
         </template>
       </el-table-column>
       <el-table-column label="待付租金" align="center" prop="planRent" />
-      <el-table-column label="实收租金" align="center" prop="realityRent" />
       <el-table-column label="待付物业费" align="center" prop="planProperty" />
       <el-table-column label="实付物业费" align="center" prop="realityProperty" />
       <el-table-column label="所属部门" align="center" prop="deptId" />
@@ -274,6 +274,13 @@
             @click="handleUpdate(scope.row)"
             v-hasPermi="['business:contract:edit']"
           >修改</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-plus"
+            @click="handleAddTransaction(scope.row)"
+            v-hasPermi="['business:contract:add']"
+          >添加交易</el-button>
           <el-button
             size="mini"
             type="text"
@@ -301,7 +308,7 @@
             <el-option
               v-for="item in storeList"
               :key="item.id"
-              :label="item.storeName"
+              :label="item.storeNo"
               :value="item.id">
             </el-option>
           </el-select>
@@ -375,10 +382,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="待付租金" prop="planRent">
-          <el-input v-model="form.planRent" placeholder="请输入待付租金" />
-        </el-form-item>
-        <el-form-item label="实收租金" prop="realityRent">
-          <el-input v-model="form.realityRent" placeholder="请输入实收租金" />
+          <el-input v-model="planRent" placeholder="请输入待付租金" disabled />
         </el-form-item>
         <el-form-item label="待付物业费" prop="planProperty">
           <el-input v-model="form.planProperty" placeholder="请输入待付物业费" />
@@ -401,11 +405,47 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 添加交易对话框 -->
+    <el-dialog title="添加交易" :visible.sync="transactionOpen" width="500px" append-to-body>
+      <el-form ref="transactionForm" :model="transactionForm" :rules="transactionRules" label-width="80px">
+        <el-form-item label="合同编号" prop="contractNo">
+          <el-input v-model="transactionForm.contractNo" disabled placeholder="请输入合同编号" />
+        </el-form-item>
+        <el-form-item label="金额" prop="money">
+          <el-input v-model="transactionForm.money" placeholder="请输入金额" />
+        </el-form-item>
+        <el-form-item label="类型" prop="type">
+          <el-select v-model="transactionForm.type" placeholder="请选择类型">
+            <el-option
+              v-for="dict in typeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="transactionForm.remark" placeholder="请输入备注" />
+        </el-form-item>
+        <el-form-item label="扩展1" prop="extend1">
+          <el-input v-model="transactionForm.extend1" placeholder="请输入扩展1" />
+        </el-form-item>
+        <el-form-item label="扩展2" prop="extend2">
+          <el-input v-model="transactionForm.extend2" placeholder="请输入扩展2" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitTransactionForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { listContract, getContract, delContract, addContract, updateContract, exportContract } from "@/api/business/contract";
+import { payTransation } from "@/api/business/transaction";
 import FileUpload from '@/components/FileUpload';
 import { listStore } from "@/api/business/store";
 import { listTenant } from "@/api/business/tenant";
@@ -435,6 +475,8 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 是否显示交易弹出层
+      transactionOpen: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -463,17 +505,29 @@ export default {
       },
       // 表单参数
       form: {},
+      transactionForm: {},
       // 表单校验
       rules: {
       },
+      transactionRules: {},
       storeList: [],
       tenantList: [],
+      typeOptions: []
     };
+  },
+  computed: {
+    planRent () {
+      if (this.form.monthlyRental) return this.form.monthlyRental * 3
+      return 0
+    }
   },
   created() {
     this.getList();
     this.getStoreList();
     this.getTenantList();
+    this.getDicts("transaction_type").then(response => {
+      this.typeOptions = response.data;
+    });
   },
   methods: {
     /** 查询商铺列表 */
@@ -481,6 +535,7 @@ export default {
       listStore({
         pageNum: 1,
         pageSize: 10000,
+        status: '0'
       }).then(response => {
         this.storeList = response.rows;
       });
@@ -502,6 +557,10 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
+    },
+    // 类型字典翻译
+    typeFormat(row, column) {
+      return this.selectDictLabel(this.typeOptions, row.type);
     },
     // 取消按钮
     cancel() {
@@ -538,7 +597,23 @@ export default {
         extend1: null,
         extend2: null
       };
+      this.transactionForm = {
+        id: null,
+        contractNo: null,
+        contractId: null,
+        money: null,
+        type: null,
+        createBy: null,
+        createTime: null,
+        updateBy: null,
+        updateTime: null,
+        deptId: null,
+        remark: null,
+        extend1: null,
+        extend2: null
+      }
       this.resetForm("form");
+      this.resetForm("transactionForm");
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -562,6 +637,12 @@ export default {
       this.open = true;
       this.title = "添加合同";
     },
+    handleAddTransaction (row) {
+      this.reset();
+      this.transactionOpen = true;
+      this.transactionForm.contractNo = row.contractNo
+      this.transactionForm.contractId = row.id
+    },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
@@ -577,7 +658,11 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateContract(this.form).then(response => {
+            const params = {
+              ...this.form,
+            }
+            if (params.monthlyRental) params.planRent = this.form.monthlyRental*3
+            updateContract(params).then(response => {
               this.msgSuccess("修改成功");
               this.open = false;
               this.getList();
@@ -589,6 +674,16 @@ export default {
               this.getList();
             });
           }
+        }
+      });
+    },
+    submitTransactionForm() {
+      this.$refs["transactionForm"].validate(valid => {
+        if (valid) {
+          payTransation(this.transactionForm).then(response => {
+            this.msgSuccess("新增成功");
+            this.transactionOpen = false;
+          });
         }
       });
     },

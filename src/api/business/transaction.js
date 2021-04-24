@@ -51,3 +51,12 @@ export function exportTransaction(query) {
     params: query
   })
 }
+
+// 添加交易
+export function payTransation(data) {
+  return request({
+    url: '/business/pay',
+    method: 'post',
+    data: data
+  })
+}
