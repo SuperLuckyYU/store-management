@@ -225,12 +225,15 @@
         </el-row>
         <el-row class="row">
           <el-col :span="8"><span class="label">电路检修即将检修：</span><span class="value">{{ info.upcomingElectricalMaintenanceExpireRoom || 0 }}</span></el-col>
-          <el-col :span="8"><span class="label">灭火器更换：</span><span class="value">{{ info.extinguisherExpireRoom || 0 }}</span></el-col>
-          <el-col :span="8"><span class="label">其他1已到期：</span><span class="value">{{ info.other1ExpireRoom || 0 }}</span></el-col>
+          <el-col :span="8"><span class="label">灭火器更换：</span><span class="value">{{ info.upcomingExtinguisherExpireRoom}}</span></el-col>
+          <el-col :span="8"><span class="label">灭火器更换间数：</span><span class="value">{{ info.extinguisherExpireRoom}}</span></el-col>
         </el-row>
         <el-row class="row">
+          <el-col :span="8"><span class="label">其他1已到期：</span><span class="value">{{ info.other1ExpireRoom || 0 }}</span></el-col>
           <el-col :span="8"><span class="label">其他1即将到期：</span><span class="value">{{ info.upcomingOther1ExpireRoom || 0 }}</span></el-col>
           <el-col :span="8"><span class="label">其他2已到期：</span><span class="value">{{ info.other2ExpireRoom || 0 }}</span></el-col>
+        </el-row>
+        <el-row class="row">
           <el-col :span="8"><span class="label">其他2即将到期：</span><span class="value">{{ info.upcomingOther2ExpireRoom || 0 }}</span></el-col>
         </el-row>
       </div>

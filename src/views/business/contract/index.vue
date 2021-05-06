@@ -535,7 +535,7 @@ export default {
       listStore({
         pageNum: 1,
         pageSize: 10000,
-        status: '0'
+        status: '0',
       }).then(response => {
         this.storeList = response.rows;
       });
