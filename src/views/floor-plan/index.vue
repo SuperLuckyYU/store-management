@@ -73,6 +73,9 @@
             {{
               index === 0 ? item.storeNo : layouts[index-1].storeNo !== item.storeNo ? item.storeNo : ''
             }}
+            {{
+              item.tenantName ? `(${item.tenantName})` : ''
+            }}
           </vue-draggable-resizable>
         </div>
 
@@ -100,6 +103,9 @@
             :resizable="false">
             {{
               index === 0 ? item.storeNo : layouts[index-1].storeNo !== item.storeNo ? item.storeNo : ''
+            }}
+            {{
+              item.tenantName ? `(${item.tenantName})` : ''
             }}
           </vue-draggable-resizable>
         </div>
@@ -145,7 +151,7 @@
 import VueDraggableResizable from 'vue-draggable-resizable'
 import AddStroeDialog from '../../sections/AddStoreDialog'
 import StoreDetailDialog from '../../sections/StoreDetailDialog'
-import { getStore } from '@/api/business/store'
+import { getStore, getSummaryInfo } from '@/api/business/store'
 import { updateArea, getArea, queryAreaStoreList } from "@/api/business/area"
 import { COLOR } from '../../constants/store'
 import "@riophae/vue-treeselect/dist/vue-treeselect.css"
@@ -191,6 +197,7 @@ export default {
       // 商铺状态字典
       statusOptions: [],
       storeIdMapStatus: {},
+      storeInfoObj: {},
       color: COLOR,
     }
   },
@@ -329,6 +336,11 @@ export default {
         this.$router.go(0)
       });
     },
+    // 获取商铺详情信息
+    async getSummaryInfo (id) {
+      const {data} = await getSummaryInfo(id)
+      this.storeInfo = data
+    },
     // 根据区域id查询房间信息
     async fetchRoomInfo () {
       const res = await getArea(this.$route.query.id)
@@ -355,14 +367,24 @@ export default {
           const promises = storeIds.map(function (id) {
             return getStore(id)
           })
+          const summaryInfoPromises = storeIds.map(function (id) {
+            return getSummaryInfo(id)
+          })
           try {
             const rets = await Promise.all(promises)
+            const infoRets = await Promise.all(summaryInfoPromises)
             rets.map(({data}) => {
               this.storeIdMapStatus[data.id] = data.status
+            })
+            infoRets.map(({data}) => {
+              this.storeInfoObj[data.store.id] = data
             })
             roomInfo.map(item => {
               item.storeStatus = this.storeIdMapStatus[item.storeId]
               item.expiresDateStatus = this.storeObj[item.storeId].expiresDateStatus
+              if (item.storeStatus === '0') {
+                item.tenantName = this.storeInfoObj[item.storeId].tenant.storeName
+              }
             })
             this.layouts = roomInfo
             if (this.layouts.length > 0) this.type = 'show'

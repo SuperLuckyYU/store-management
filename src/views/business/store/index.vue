@@ -138,8 +138,8 @@
 
     <el-table v-loading="loading" :data="storeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="区域id" align="center" prop="areaId" />
+      <el-table-column label="编号" align="center" prop="id" />
+      <el-table-column label="区域编号" align="center" prop="areaId" />
       <el-table-column label="商铺编号" align="center" prop="storeNo" />
       <el-table-column label="商铺类型" align="center" prop="type" :formatter="typeFormat" />
       <el-table-column label="商铺状态" align="center" prop="status" :formatter="statusFormat" />

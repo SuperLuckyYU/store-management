@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="父id" prop="pid">
+      <el-form-item label="公司" prop="pid">
         <el-input
           v-model="queryParams.pid"
-          placeholder="请输入父id"
+          placeholder="请输入公司"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -82,7 +82,7 @@
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
-      <el-table-column label="父id" align="center" prop="pid" />
+      <el-table-column label="公司" align="center" prop="pid" />
       <el-table-column label="名称" align="center" prop="name">
         <template slot-scope="scope">
           <router-link v-if="scope.row.ancestors.split(',').length === 3" :to="{ path: '/floor-plan', query: { id: scope.row.id, name: scope.row.name, pid: scope.row.pid }}">
@@ -120,8 +120,8 @@
     <!-- 添加或修改区域对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="父id" prop="pid">
-          <treeselect v-model="form.pid" :options="areaOptions" :normalizer="normalizer" placeholder="请选择父id" />
+        <el-form-item label="公司" prop="pid">
+          <treeselect v-model="form.pid" :options="areaOptions" :normalizer="normalizer" placeholder="请选择公司" />
         </el-form-item>
         <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入名称" />
@@ -185,7 +185,7 @@ export default {
       // 表单校验
       rules: {
         pid: [
-          { required: true, message: '请选择父id', trigger: 'blur' },
+          { required: true, message: '请选择公司', trigger: 'blur' },
         ],
         name: [
           { required: true, message: '请填写名称', trigger: 'blur' },

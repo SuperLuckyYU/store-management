@@ -144,7 +144,7 @@
 
     <el-table v-loading="loading" :data="tenantList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="id" align="center" prop="id" />
+      <el-table-column label="编号" align="center" prop="id" />
       <el-table-column label="店名" align="center" prop="storeName" />
       <el-table-column label="行业" align="center" prop="trade" />
       <el-table-column label="入驻日期" align="center" prop="enterDate" width="180">
@@ -179,7 +179,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"

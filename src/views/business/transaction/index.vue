@@ -120,7 +120,7 @@
 
     <el-table v-loading="loading" :data="transactionList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="id" align="center" prop="id" />
+      <el-table-column label="编号" align="center" prop="id" />
       <el-table-column label="合同编号" align="center" prop="contractNo" />
       <!-- <el-table-column label="租户" align="center" prop="tenantName" /> -->
       <!-- <el-table-column label="商铺" align="center" prop="storeNo" /> -->

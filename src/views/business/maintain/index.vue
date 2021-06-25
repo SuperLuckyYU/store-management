@@ -174,7 +174,7 @@
 
     <el-table v-loading="loading" :data="maintainList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="id" align="center" prop="id" />
+      <el-table-column label="编号" align="center" prop="id" />
       <el-table-column label="商铺" align="center" prop="storeNo" />
       <el-table-column label="电路检修日期" align="center" prop="electrical" width="180">
         <template slot-scope="scope">
